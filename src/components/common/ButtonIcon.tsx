@@ -1,13 +1,13 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React, { ReactNode } from 'react';
-import Header from './Header';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Icon } from '@rneui/themed';
+import React from 'react'
+import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Layout({ children }: ILayout) {
+export default function ButtonIcon ({onPress, iconName, iconFamily, iconSize, iconColor, style}: IButtonIcon) {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
@@ -22,16 +22,20 @@ export default function Layout({ children }: ILayout) {
 
     // #region RENDER --> //////////////////////////////////////
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-            <Header />
-            {children}
-        </SafeAreaView>
+        <TouchableOpacity style={style} onPress={onPress}>
+            <Icon color={iconColor} name={iconName} type={iconFamily} size={iconSize}/>
+        </TouchableOpacity>
     );
     // #endregion RENDER --> ///////////////////////////////////
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface ILayout {
-    children: ReactNode;
+interface IButtonIcon {
+    onPress: () => void;
+    iconName: string;
+    iconFamily?: string;
+    iconSize?: number;
+    iconColor?: string;
+    style?: StyleProp<ViewStyle>
 }
 // #enderegion IPROPS --> //////////////////////////////////

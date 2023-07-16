@@ -12,10 +12,11 @@ export type RootStackParamList = {
     Home;
     Setup;
     User;
-    Login;
+    Login: { isVisible: boolean, mode: "signUp" | "signIn" };
     Error;
     NotFound;
     Info;
+    Finalize;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, Screen>;

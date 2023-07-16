@@ -1,17 +1,18 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React, { ReactNode } from 'react';
-import Header from './Header';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import React, { ReactNode, useState } from 'react'
+import { UserLoginResponse } from '~/data/model/userApiModel';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Layout({ children }: ILayout) {
+export default function ProtectedRoutes ({ children, session }: IProtectedRoutes) {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
+    const navigation = useNavigation();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
@@ -21,17 +22,21 @@ export default function Layout({ children }: ILayout) {
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-            <Header />
-            {children}
-        </SafeAreaView>
-    );
+    if (!session) {
+        navigation.navigate("Login");
+    } else {
+        return (
+            <>
+                {children}
+            </>
+        );
+    }
     // #endregion RENDER --> ///////////////////////////////////
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface ILayout {
+interface IProtectedRoutes {
     children: ReactNode;
+    session: UserLoginResponse;
 }
 // #enderegion IPROPS --> //////////////////////////////////

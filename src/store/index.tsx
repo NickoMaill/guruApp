@@ -1,15 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import backgroundImage from './AppContext/backgroundImage';
 import isAppConfigured from './AppContext/isAppConfigured';
-import isLoading from './AppContext/isLoading';
-import showFooter from './AppContext/showFooter';
+import session from './AppContext/session';
 
 const store = configureStore({
     reducer: {
-        isLoading: isLoading,
-        backgroundImage: backgroundImage,
-        isAppConfigured: isAppConfigured,
-        showFooter: showFooter,
+        session: session,
+        isAppConfigured: isAppConfigured
     },
 });
 

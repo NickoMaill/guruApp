@@ -1,11 +1,13 @@
-import configManager from "./configManager";
+import { UserLoginResponse } from "~/data/model/userApiModel";
+import storageManager from "./storageManager";
 
 const apiHost = "http://192.168.1.55:8080";
 
 class ServerApiManager {
 	public async get<T>(route: string, headersRequest?: any): Promise<T> {
 		const headers = new Headers();
-        
+		const session = await storageManager.getItem<UserLoginResponse>("session");
+		headers.set("Authorization", "Bearer " + session ? session.token : "");
         for (const header in headersRequest) {
             headers.set(header, headersRequest[header]);
         }
@@ -17,11 +19,8 @@ class ServerApiManager {
 		};
 
 		const url = `${apiHost}/${route}`;
-
 		const request = await fetch(url, options);
-
 		const response = await request.json();
-
 		return response as T;
 	}
 
@@ -49,6 +48,9 @@ class ServerApiManager {
 	public async post<T>(route: string, body?: T, formData?: FormData, headersRequest?: any) {
 		console.log(apiHost);
 		const headers = new Headers();
+		const session = await storageManager.getItem<UserLoginResponse>("session");
+		headers.set("Authorization", "Bearer " + session !== null ? session.token : "");
+
 		for (const header in headersRequest) {
 			headers.set(header, headersRequest[header]);
 		}
@@ -71,6 +73,8 @@ class ServerApiManager {
 
 	public async put<T>(route: string, body?: T, formData?: FormData, headersRequest?: any) {
 		const headers = new Headers();
+		const session = await storageManager.getItem<UserLoginResponse>("session");
+		headers.set("Authorization", "Bearer " + session.token ? session.token : null);
 		for (const header in headersRequest) {
 			headers.set(header, headersRequest[header]);
 		}
@@ -94,6 +98,9 @@ class ServerApiManager {
 
 	public async delete<T>(route: string, body?: T, headersRequest?: any) {
 		const headers = new Headers();
+		const session = await storageManager.getItem<UserLoginResponse>("session");
+		headers.set("Authorization", "Bearer " + session.token ? session.token : null);
+
 		for (const header in headersRequest) {
 			headers.set(header, headersRequest[header]);
 		}

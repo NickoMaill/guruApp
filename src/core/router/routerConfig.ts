@@ -13,7 +13,8 @@ const linking: LinkingOptions<RootStackParamList> = {
             Setup: 'Setup',
             Error: 'Error',
             NotFound: '*',
-            Info: 'Info'
+            Info: 'Info',
+            Finalize: 'Finalize'
         },
     },
 };

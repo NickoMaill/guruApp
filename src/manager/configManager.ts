@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { IConfigEnv } from '../core/types/config';
 import { Dimensions, Platform } from 'react-native';
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('window');
 class ConfigManager {
     public readonly __env: IConfigEnv;
 

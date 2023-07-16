@@ -1,13 +1,14 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React, { ReactNode } from 'react';
-import Header from './Header';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from 'react';
+import { Stack } from '@rneui/layout';
+import { CheckBox, Text } from '@rneui/themed';
+import { View } from 'react-native';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Layout({ children }: ILayout) {
+export default function CheckBoxesGroup<T>({ data, currentValue, onChange, label }: ICheckBoxesGroup<T>) {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
@@ -22,16 +23,23 @@ export default function Layout({ children }: ILayout) {
 
     // #region RENDER --> //////////////////////////////////////
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-            <Header />
-            {children}
-        </SafeAreaView>
+        <View style={{ marginTop: 10 }}>
+            <Text>{label}</Text>
+            <Stack row align="baseline">
+                {data.map((element, i) => {
+                    return <CheckBox key={i} title={element.label} checked={currentValue === element.value} onPress={() => onChange(element.value)} checkedIcon="dot-circle-o" uncheckedIcon="circle-o" />;
+                })}
+            </Stack>
+        </View>
     );
     // #endregion RENDER --> ///////////////////////////////////
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface ILayout {
-    children: ReactNode;
+interface ICheckBoxesGroup<T> {
+    data: { label: string; value: T }[];
+    currentValue: T;
+    onChange: (value: T) => void;
+    label: string;
 }
 // #enderegion IPROPS --> //////////////////////////////////
