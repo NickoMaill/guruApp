@@ -1,33 +1,43 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React from 'react'
 import useStorage from './useStorage';
-import { useAppDispatch, useAppSelector } from '~/store/storeHooks';
-import { sessionSlice } from '~/store/AppContext/session';
-import userServices from '~/services/userServices';
+import useServiceApi from './useServiceApi';
+import { execService } from '~/manager/errorManager';
+import { useContext } from 'react';
+import AppContext from '~/context/AppContext';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function useAuth () {
+export default function useAuth(): IUseAuth {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
-    const storage = useStorage();
-    const Store = useAppDispatch();
+    const Context = useContext(AppContext);
+    const Storage = useStorage();
+    const Service = useServiceApi();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
     const isAuthenticated = async (): Promise<boolean> => {
-        const access = await storage.getSession();
-        if (!access) {
+        try {
+            if (!Context.access) {
+                const session = await Storage.getSession();
+                if (session) {
+                    const newAccess = await execService(Service.get<{ accessToken: string }>('user/refresh', { 'X-refresh-token': session.token }));
+                    if (newAccess.accessToken) {
+                        Context.setAccess(newAccess.accessToken);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return true;
+        } catch (error) {
             return false;
         }
-
-        Store(sessionSlice.actions.setSession(access));
-        return true;
-    }
+    };
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
@@ -40,6 +50,6 @@ export default function useAuth () {
 
 // #region IPROPS -->  /////////////////////////////////////
 interface IUseAuth {
-    isAuthenticated: () => Promise<boolean>
+    isAuthenticated: () => Promise<boolean>;
 }
 // #enderegion IPROPS --> //////////////////////////////////

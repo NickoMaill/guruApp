@@ -1,14 +1,28 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React from 'react';
-import { Stack } from '@rneui/layout';
-import { CheckBox, Text } from '@rneui/themed';
-import { View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Icon as RootIcon } from '@rneui/themed';
+import { EntypoNameType, FeatherNameType, FontistoNameType, IoniconsNameType, OcticonsNameType, ZocialNameType } from '../IconNameTypes';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
+type IconType =
+    | 'material'
+    | 'material-community'
+    | 'simple-line-icon'
+    | 'zocial'
+    | 'font-awesome'
+    | 'octicon'
+    | 'ionicon'
+    | 'foundation'
+    | 'evilicon'
+    | 'entypo'
+    | 'antdesign'
+    | 'font-awesome-5'
+    | 'feather'
+    | 'fontisto';
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function CheckBoxesGroup<T>({ data, currentValue, onChange, label }: ICheckBoxesGroup<T>) {
+export default function Icon({ name, type, color = '#b2b2b2' }: IIcon) {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
@@ -22,24 +36,14 @@ export default function CheckBoxesGroup<T>({ data, currentValue, onChange, label
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return (
-        <View style={{ marginTop: 10 }}>
-            <Text>{label}</Text>
-            <Stack row align="baseline">
-                {data.map((element, i) => {
-                    return <CheckBox key={i} title={element.label} checked={currentValue === element.value} onPress={() => onChange(element.value)} checkedIcon="dot-circle-o" uncheckedIcon="circle-o" />;
-                })}
-            </Stack>
-        </View>
-    );
+    return <RootIcon name={name} type={type} color={color} />;
     // #endregion RENDER --> ///////////////////////////////////
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface ICheckBoxesGroup<T> {
-    data: { label: string; value: T }[];
-    currentValue: T;
-    onChange: (value: T) => void;
-    label: string;
+interface IIcon {
+    type: IconType;
+    name: string;
+    color?: string;
 }
 // #enderegion IPROPS --> //////////////////////////////////

@@ -2,12 +2,13 @@
 import React, { ReactNode } from 'react';
 import Header from './Header';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import configManager from '~/manager/configManager';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Layout({ children }: ILayout) {
+export default function Layout({ children, headerShown = false }: ILayout) {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
@@ -22,8 +23,8 @@ export default function Layout({ children }: ILayout) {
 
     // #region RENDER --> //////////////////////////////////////
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-            <Header />
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white', marginTop: configManager.isIos() ? -60 : 0 }}>
+            {headerShown && <Header />}
             {children}
         </SafeAreaView>
     );
@@ -33,5 +34,6 @@ export default function Layout({ children }: ILayout) {
 // #region IPROPS -->  /////////////////////////////////////
 interface ILayout {
     children: ReactNode;
+    headerShown?: boolean;
 }
 // #enderegion IPROPS --> //////////////////////////////////

@@ -1,7 +1,6 @@
 export type TranslationResourcesType = {
     common: {
-        toast: {
-        };
+        toast: {};
         yes;
         no;
     };

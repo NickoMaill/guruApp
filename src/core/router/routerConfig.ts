@@ -1,22 +1,22 @@
-import { LinkingOptions } from '@react-navigation/native';
-import { RootStackParamList } from './routerType';
-
-const linking: LinkingOptions<RootStackParamList> = {
-    prefixes: ['/'],
-    config: {
-        screens: {
-            Splash: 'Splash',
-            Hello: 'Hello',
-            Home: 'Home',
-            Login: 'Login',
-            User: 'User',
-            Setup: 'Setup',
-            Error: 'Error',
-            NotFound: '*',
-            Info: 'Info',
-            Finalize: 'Finalize'
-        },
-    },
+type RouteDescriptionType = {
+    name: keyof ReactNavigation.RootParamList;
+    isProtected: boolean;
 };
 
-export default linking;
+class RouterConfig {
+    public get routeDescription(): RouteDescriptionType[] {
+        return [
+            { name: 'Splash', isProtected: false },
+            { name: 'Error', isProtected: false },
+            { name: 'Finalize', isProtected: true },
+            { name: 'Home', isProtected: true },
+            { name: 'Info', isProtected: true },
+            { name: 'Login', isProtected: false },
+            { name: 'NotFound', isProtected: false },
+            { name: 'Setup', isProtected: true },
+            { name: 'User', isProtected: true },
+        ];
+    }
+}
+
+export default new RouterConfig();

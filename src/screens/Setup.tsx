@@ -1,30 +1,32 @@
 // #region IMPORTS -> /////////////////////////////////////
-import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useEffect } from 'react'
+import { Button } from '@rneui/themed';
+import React, { useEffect } from 'react';
 import Layout from '~/components/layouts/Layout';
+import useUserService from '~/hooks/services/useUserService';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Setup () {
+export default function Setup() {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
+    const UserService = useUserService();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
-    useEffect(() => {}, [])
+    useEffect(() => {}, []);
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
     return (
-        <Layout>
-            <></>
+        <Layout headerShown>
+            <Button onPress={async () => await UserService.logout()}>Se déconnecter</Button>
         </Layout>
     );
     // #endregion RENDER --> ///////////////////////////////////

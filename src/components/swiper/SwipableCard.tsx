@@ -32,9 +32,15 @@ export default function SwipeCard({ item, removeCard, swipedDirection }: ISwipeC
             if (gestureState.dx < configManager.dimension.width - 150 && gestureState.dx > -configManager.dimension.width + 150) {
                 Animated.spring(xPosition, { toValue: 0, speed: 6, bounciness: 10, useNativeDriver: false }).start();
             } else if (gestureState.dx > configManager.dimension.width - 150) {
-                Animated.parallel([Animated.timing(xPosition, { toValue: configManager.dimension.width, duration: 200, useNativeDriver: false }), Animated.timing(cardOpacity, { toValue: 0, duration: 200, useNativeDriver: false })]).start(() => removeCard());
+                Animated.parallel([
+                    Animated.timing(xPosition, { toValue: configManager.dimension.width, duration: 200, useNativeDriver: false }),
+                    Animated.timing(cardOpacity, { toValue: 0, duration: 200, useNativeDriver: false }),
+                ]).start(() => removeCard());
             } else if (gestureState.dx < -configManager.dimension.width + 150) {
-                Animated.parallel([Animated.timing(xPosition, { toValue: -configManager.dimension.width, duration: 200, useNativeDriver: false }), Animated.timing(cardOpacity, { toValue: 0, duration: 200, useNativeDriver: false })]).start(() => removeCard());
+                Animated.parallel([
+                    Animated.timing(xPosition, { toValue: -configManager.dimension.width, duration: 200, useNativeDriver: false }),
+                    Animated.timing(cardOpacity, { toValue: 0, duration: 200, useNativeDriver: false }),
+                ]).start(() => removeCard());
             }
         },
     });

@@ -3,7 +3,7 @@ import { KeyValuePair } from '@react-native-async-storage/async-storage/lib/type
 import { RecursiveKeyOf } from '../core/types/common';
 
 type StorageNameReference = {
-    session: string;
+    session;
 };
 
 class StorageManager {

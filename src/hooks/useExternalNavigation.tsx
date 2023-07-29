@@ -1,5 +1,5 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React from 'react'
+import React from 'react';
 import { Linking } from 'react-native';
 import { AppError, ErrorTypeEnum } from '~/core/appError';
 // #endregion IMPORTS -> //////////////////////////////////
@@ -7,7 +7,7 @@ import { AppError, ErrorTypeEnum } from '~/core/appError';
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function useExternalNavigation (): IUseExternalNavigation {
+export default function useExternalNavigation(): IUseExternalNavigation {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
@@ -21,14 +21,14 @@ export default function useExternalNavigation (): IUseExternalNavigation {
         if (canOpenURL) {
             Linking.openURL(url);
         } else {
-            throw new AppError(ErrorTypeEnum.Functional, "no opening provided for this uri", "no_uri")
+            throw new AppError(ErrorTypeEnum.Functional, 'no opening provided for this uri', 'no_uri');
         }
-    }
+    };
 
     const checkUri = async (url: string): Promise<boolean> => {
         const canOpenURL = await Linking.canOpenURL(url);
         return canOpenURL;
-    }
+    };
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
@@ -41,7 +41,7 @@ export default function useExternalNavigation (): IUseExternalNavigation {
 
 // #region IPROPS -->  /////////////////////////////////////
 interface IUseExternalNavigation {
-    open: (url: string) => Promise<void>
-    checkUri: (url: string) => Promise<boolean>
+    open: (url: string) => Promise<void>;
+    checkUri: (url: string) => Promise<boolean>;
 }
 // #enderegion IPROPS --> //////////////////////////////////

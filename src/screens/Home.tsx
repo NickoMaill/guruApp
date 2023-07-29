@@ -27,11 +27,10 @@ export default function Home({ navigation }) {
 
     // #region RENDER --> //////////////////////////////////////
     return (
-		<Layout>
-			{isLoading ? <BouncerLoader /> : <></>}
-			<FabGroup />
-		</Layout>
-
+        <Layout headerShown>
+            {isLoading ? <BouncerLoader /> : <></>}
+            <FabGroup />
+        </Layout>
     );
     // #endregion RENDER --> ///////////////////////////////////
 }

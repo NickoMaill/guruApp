@@ -1,10 +1,12 @@
 // #region IMPORTS -> /////////////////////////////////////
 import { Icon } from '@rneui/base';
-import { Button, CheckBox, Input } from '@rneui/themed';
-import React, { useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { Button, CheckBox, Input, Text } from '@rneui/themed';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity, View, Keyboard } from 'react-native';
 import { AppError, ErrorTypeEnum } from '~/core/appError';
 import { UserLoginPayload } from '~/data/model/userApiModel';
+import configManager from '~/manager/configManager';
+import InputText from '../common/InputText';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
@@ -14,33 +16,37 @@ type InputsError = {
     errorEmailMessage: string;
     errorPassword: boolean;
     errorPasswordMessage: string;
+    errorGlobalMessage: string;
+};
+const initialStateError: InputsError = {
+    errorEmail: false,
+    errorPassword: false,
+    errorEmailMessage: '',
+    errorPasswordMessage: '',
+    errorGlobalMessage: '',
 };
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function SignInForm({ submit, isLoading }: ISignInForm) {
+export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm) {
     // #region STATE --> ///////////////////////////////////////
-    const [isPasswordHidden, setIsPasswordHidden] = useState<boolean>(true);
-    const [currentIcon, setCurrentIcon] = useState<'eye' | 'eye-with-line'>('eye-with-line');
     const [isRemember, setIsRemember] = useState<boolean>(false);
     const [password, setPassword] = useState<string>('');
     const [email, setEmail] = useState<string>('');
-    const [error, setError] = useState<InputsError>({ errorEmail: false, errorPassword: false, errorEmailMessage: '', errorPasswordMessage: '' });
+    const [error, setError] = useState<InputsError>(initialStateError);
+    const [isKeyboardShown, setIsKeyboardShown] = useState<boolean>(false);
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
+    Keyboard.addListener('keyboardWillShow', (e) => {
+        setIsKeyboardShown(true);
+    });
+
+    Keyboard.addListener('keyboardWillHide', () => {
+        setIsKeyboardShown(false);
+    });
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
-    const showPassword = (show: boolean) => {
-        if (show) {
-            setIsPasswordHidden(false);
-            setCurrentIcon('eye');
-        } else {
-            setIsPasswordHidden(true);
-            setCurrentIcon('eye-with-line');
-        }
-    };
-
     const verifyInput = (): boolean => {
         if (email.length === 0 || !email) {
             setError((prevState) => {
@@ -67,41 +73,66 @@ export default function SignInForm({ submit, isLoading }: ISignInForm) {
     };
 
     const buildPayload = () => {
+        setError(initialStateError);
         if (!verifyInput()) {
             return;
         }
         const payload = {
             email: email,
             password: password,
-            rememberMe: isRemember
-        }
+            rememberMe: isRemember,
+        };
         submit(payload);
-    }
+    };
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
+    useEffect(() => {
+        if (errorCred) {
+            setError((prevState) => {
+                return { ...prevState, errorEmail: true, errorPassword: true, errorGlobalMessage: 'Email et/ou mot de passe invalide' };
+            });
+        }
+    }, [errorCred]);
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
     return (
-        <View>
-            <Input onChangeText={(e) => setEmail(e)} errorMessage={error.errorEmailMessage} renderErrorMessage={error.errorEmail} leftIcon={<Icon name="alternate-email" color="#b2b2b2" />} label="email" inputMode="email" placeholder="exemple@email.com" />
-            <Input
-                errorMessage={error.errorPasswordMessage}
-                renderErrorMessage={error.errorPassword}
+        <View style={{ top: isKeyboardShown ? (configManager.isIos() ? -100 : 0) : 0 }}>
+            <InputText
+                onChangeText={(e) => setEmail(e)}
+                errorMessage={error.errorEmailMessage}
+                isError={error.errorEmail}
+                iconFamily="material"
+                nameIcon="alternate-email"
+                colorIcon="#b2b2b2"
+                label="Email"
+                inputType="emailAddress"
+                inputValue={email}
+                placeholder="exemple@email.com"
+            />
+            <InputText
                 onChangeText={(e) => setPassword(e)}
-                leftIcon={<Icon name="lock" color="#b2b2b2" />}
-                rightIcon={
-                    <TouchableOpacity onPressIn={() => showPassword(true)} onPressOut={() => showPassword(false)}>
-                        <Icon name={currentIcon} type="entypo" />
-                    </TouchableOpacity>
-                }
-                secureTextEntry={isPasswordHidden}
-                label="password"
-                placeholder="*********"
+                errorMessage={error.errorPasswordMessage}
+                isError={error.errorPassword}
+                nameIcon="lock"
+                colorIcon="#b2b2b2"
+                label="Mot de passe"
+                inputType="password"
+                inputValue={password}
+                placeholder="********"
             />
             <CheckBox center title="se souvenir de moi" checked={isRemember} onPress={() => setIsRemember(!isRemember)} checkedColor="tomato" />
-            <Button loadingProps={{ size: 30 }} loading={isLoading} onPress={() => buildPayload()} radius={100} buttonStyle={{ padding: 20, backgroundColor: 'tomato' }} titleStyle={{ fontSize: 20 }} containerStyle={{ margin: 10, marginHorizontal: 50 }}>
+            <Text style={{ color: 'red', textAlign: 'center', fontWeight: 'bold', marginBottom: 20 }}>{error.errorGlobalMessage}</Text>
+            <Button
+                loadingProps={{ size: 30 }}
+                loading={isLoading}
+                onPress={() => buildPayload()}
+                radius={100}
+                buttonStyle={{ padding: 20, backgroundColor: 'tomato' }}
+                titleStyle={{ fontSize: 20 }}
+                containerStyle={{ margin: 10, marginHorizontal: 50 }}
+            >
                 Connexion
             </Button>
         </View>
@@ -111,7 +142,8 @@ export default function SignInForm({ submit, isLoading }: ISignInForm) {
 
 // #region IPROPS -->  /////////////////////////////////////
 interface ISignInForm {
-    submit: (data: UserLoginPayload) => void
-    isLoading: boolean
+    submit: (data: UserLoginPayload) => void;
+    isLoading: boolean;
+    errorCred: boolean;
 }
 // #enderegion IPROPS --> //////////////////////////////////

@@ -7,6 +7,13 @@ export enum ErrorTypeEnum {
     Maintenance = 5,
 }
 
+export type ServerApiError = {
+    errorCode: string;
+    message: string;
+    detailedMessage?: string;
+    data?: any;
+};
+
 export class AppError {
     public readonly type: ErrorTypeEnum;
     public readonly code?: string;

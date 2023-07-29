@@ -1,31 +1,27 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React from 'react'
+import React from 'react';
 import useStorage from './useStorage';
+import { UserLoginPayload } from '~/data/model/userApiModel';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function UseService ({}: IUseService) {
+export default function useService({}: IUseService) {
     // #region STATE --> ///////////////////////////////////////
-    const storage = useStorage();
     // #endregion STATE --> ////////////////////////////////////
-    
+
     // #region HOOKS --> ///////////////////////////////////////
-    const refresh = storage.getRefresh();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
-    const startServiceAsVoid = async <T,>(func: Promise<T>) => {
-
-    }
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return <></>;
+    return {};
     // #endregion RENDER --> ///////////////////////////////////
 }
 

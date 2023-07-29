@@ -39,7 +39,8 @@ export default function Info() {
                 <Text style={{ textAlign: 'center' }}>
                     Bienvenue sur Guru recipes, si vous êtes ici c'est que vous êtes curieux !{'\n'}
                     {'\n'}
-                    J'ai imaginé cette application pour toutes les personnes qui ne savent pas quoi manger ou qui ont tout simplement envie de découvrir des recettes par la force du hasard (enfin pas exactement)
+                    J'ai imaginé cette application pour toutes les personnes qui ne savent pas quoi manger ou qui ont tout simplement envie de découvrir des recettes par la force du hasard (enfin pas
+                    exactement)
                 </Text>
             </View>
             <View style={{ marginHorizontal: 20 }}>

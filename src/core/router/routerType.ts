@@ -8,11 +8,10 @@ declare global {
 
 export type RootStackParamList = {
     Splash;
-    Hello;
     Home;
     Setup;
     User;
-    Login: { isVisible: boolean, mode: "signUp" | "signIn" };
+    Login;
     Error;
     NotFound;
     Info;

@@ -1,5 +1,5 @@
-import { AppError, ErrorTypeEnum } from "./appError";
-import { ResultStatusEnum } from "./types/serverTypes";
+import { AppError, ErrorTypeEnum } from './appError';
+import { ResultStatusEnum } from './types/serverTypes';
 
 class ServiceBase {
     // public --> start region /////////////////////////////////////////////

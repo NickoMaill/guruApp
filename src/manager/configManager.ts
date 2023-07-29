@@ -1,6 +1,6 @@
-import Constants from 'expo-constants';
 import { IConfigEnv } from '../core/types/config';
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions } from 'react-native';
+import { osName, osVersion } from 'expo-device';
 const { width, height } = Dimensions.get('window');
 class ConfigManager {
     public readonly __env: IConfigEnv;
@@ -8,8 +8,8 @@ class ConfigManager {
     constructor() {
         this.__env = {
             NODE_ENV: process.env.NODE_ENV,
-            BASE_URL: process.env.SERVER_BASE_URL
-        }
+            BASE_URL: process.env.SERVER_BASE_URL,
+        };
     }
 
     public get getConfig(): IConfigEnv {
@@ -30,8 +30,8 @@ class ConfigManager {
         return {
             width,
             height,
-            os: Platform.OS,
-            version: Platform.Version,
+            os: osName.toLowerCase(),
+            version: osVersion,
         };
     }
 

@@ -22,7 +22,7 @@ export default function User({}: IUser) {
 
     // #region RENDER --> //////////////////////////////////////
     return (
-        <Layout>
+        <Layout headerShown>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>User</Text>
             </View>

@@ -1,13 +1,13 @@
 // #region IMPORTS -> /////////////////////////////////////
 import { Icon } from '@rneui/themed';
-import React from 'react'
+import React from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function ButtonIcon ({onPress, iconName, iconFamily, iconSize, iconColor, style}: IButtonIcon) {
+export default function ButtonIcon({ onPress, iconName, iconFamily, iconSize, iconColor, style }: IButtonIcon) {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
@@ -23,7 +23,7 @@ export default function ButtonIcon ({onPress, iconName, iconFamily, iconSize, ic
     // #region RENDER --> //////////////////////////////////////
     return (
         <TouchableOpacity style={style} onPress={onPress}>
-            <Icon color={iconColor} name={iconName} type={iconFamily} size={iconSize}/>
+            <Icon color={iconColor} name={iconName} type={iconFamily} size={iconSize} />
         </TouchableOpacity>
     );
     // #endregion RENDER --> ///////////////////////////////////
@@ -36,6 +36,6 @@ interface IButtonIcon {
     iconFamily?: string;
     iconSize?: number;
     iconColor?: string;
-    style?: StyleProp<ViewStyle>
+    style?: StyleProp<ViewStyle>;
 }
 // #enderegion IPROPS --> //////////////////////////////////

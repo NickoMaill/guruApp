@@ -1,55 +1,68 @@
 // #region IMPORTS -> /////////////////////////////////////
-import { useNavigation } from '@react-navigation/native';
-import { BottomSheet, Button, Icon, Input } from '@rneui/themed';
-import React, { useState } from 'react';
+import { BottomSheet, Button } from '@rneui/themed';
+import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BottomModal from '~/components/common/BottomModal';
 import ButtonIcon from '~/components/common/ButtonIcon';
 import SignInForm from '~/components/forms/SignInForm';
 import SignUpForm from '~/components/forms/SignUpForm';
-import { UserLoginPayload } from '~/data/model/userApiModel';
-import useStorage from '~/hooks/useStorage';
-import configManager from '~/manager/configManager';
-import userServices from '~/services/userServices';
+import { AppError } from '~/core/appError';
+import { INewUserDto, UserLoginPayload } from '~/data/model/userApiModel';
+import useUserService from '~/hooks/services/useUserService';
+import useNavigation from '~/hooks/useNavigation';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Login({  }) {
+export default function Login({}) {
     // #region STATE --> ///////////////////////////////////////
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
+    const [access, setAccess] = useState<string>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorCred, setErrorCred] = useState<boolean>(false);
+    const [accountCreated, setAccountCreated] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>(null);
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
-    const navigation = useNavigation();
-    const storage = useStorage();
+    const UserService = useUserService();
+    const Nav = useNavigation();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
     const openCloseBottomSheet = (chosenMode?: typeof mode) => {
         setIsVisible(!isVisible);
         setMode(chosenMode);
+        if (isVisible) {
+            setErrorCred(false);
+            setErrorMessage(null);
+        }
     };
 
     const signIn = async (payload: UserLoginPayload) => {
         setIsLoading(true);
-        await userServices.login(payload)
-        .then((res) => {
-            if (res.token) {
-                storage.setSession(res);
-                if (res.isAccountFinalized) {
-                    navigation.navigate("Home");
-                } else {
-                    navigation.navigate('Finalize');
+        setErrorCred(false);
+        setErrorMessage(null);
+        await UserService.login(payload)
+            .then((res) => (res ? Nav.goTo('Home') : setErrorCred(true)))
+            .catch((err: AppError) => {
+                if (err.code === 'wrong_credentials') {
+                    setErrorCred(true);
                 }
-            }
-        })
-        .finally(() => setIsLoading(false));
-    }
+            })
+            .finally(() => setIsLoading(false));
+    };
+
+    const signUp = async (payLoad: INewUserDto) => {
+        setIsLoading(true);
+        await UserService.subscribe(payLoad)
+            .then((res) => setAccountCreated(true))
+            .catch((err: AppError) => setErrorMessage(err.message))
+            .finally(() => setIsLoading(false));
+    };
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
@@ -64,12 +77,9 @@ export default function Login({  }) {
             <Button onPress={() => openCloseBottomSheet('signUp')} radius={100} titleStyle={{ fontSize: 25 }} buttonStyle={{ padding: 15, backgroundColor: 'tomato' }} containerStyle={{ margin: 20 }}>
                 Créer un compte
             </Button>
-            <BottomSheet containerStyle={{ overflow: 'hidden' }} isVisible={isVisible}>
-                <View style={{ backgroundColor: '#ffffff', height: configManager.dimension.height / 1.033, justifyContent: "center", overflow: 'hidden' }}>
-                    <ButtonIcon style={{ top: 0, left: 0, position: 'absolute', margin: 0 }} onPress={() => openCloseBottomSheet()} iconColor="tomato" iconSize={40} iconName="close" />
-                    {mode === "signIn" ? <SignInForm isLoading={isLoading} submit={signIn}/> : <SignUpForm/>}
-                </View>
-            </BottomSheet>
+            <BottomModal onGestureClose={(e) => setIsVisible(!e)} overflow="hidden" onPressClose={() => openCloseBottomSheet()} isVisible={isVisible}>
+                {mode === 'signIn' ? <SignInForm errorCred={errorCred} isLoading={isLoading} submit={signIn} /> : <SignUpForm submit={signUp} isLoading={isLoading} errorMessage={errorMessage} />}
+            </BottomModal>
         </SafeAreaView>
     );
     // #endregion RENDER --> ///////////////////////////////////

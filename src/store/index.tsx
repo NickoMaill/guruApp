@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import isAppConfigured from './AppContext/isAppConfigured';
-import session from './AppContext/session';
+import access from './AppContext/access';
 
 const store = configureStore({
     reducer: {
-        session: session,
-        isAppConfigured: isAppConfigured
+        access,
+        isAppConfigured,
     },
 });
 

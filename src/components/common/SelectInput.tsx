@@ -1,7 +1,7 @@
 // #region IMPORTS -> /////////////////////////////////////
 import { Text } from '@rneui/themed';
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 // #endregion IMPORTS -> //////////////////////////////////
@@ -9,7 +9,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function SelectInput({ data, value, icon, onChange, label }: ISelectInput) {
+export default function SelectInput<T>({ data, value, icon, onChange, label, containerStyle }: ISelectInput<T>) {
     // #region STATE --> ///////////////////////////////////////
     const [isFocus, setIsFocus] = useState(false);
     // #endregion STATE --> ////////////////////////////////////
@@ -31,7 +31,7 @@ export default function SelectInput({ data, value, icon, onChange, label }: ISel
 
     // #region RENDER --> //////////////////////////////////////
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
             {renderLabel()}
             <Dropdown
                 style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
@@ -46,14 +46,14 @@ export default function SelectInput({ data, value, icon, onChange, label }: ISel
                 valueField="value"
                 placeholder={!isFocus ? label : '...'}
                 // searchPlaceholder="Search..."
-                value={value}
+                value={value as any}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
                 onChange={(item) => {
                     onChange(item);
                     setIsFocus(false);
                 }}
-                renderLeftIcon={() => <AntDesign style={styles.icon} color={isFocus ? 'blue' : 'black'} name={icon} size={20} /> }
+                renderLeftIcon={() => <AntDesign style={styles.icon} color={isFocus ? 'blue' : 'black'} name={icon} size={20} />}
             />
         </View>
     );
@@ -61,19 +61,20 @@ export default function SelectInput({ data, value, icon, onChange, label }: ISel
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface ISelectInput {
-    data: { label: any; value: any }[];
-    value: any;
-    onChange: (item: { label: any; value: any }) => void;
+interface ISelectInput<T> {
+    data: { label: any; value: T }[];
+    value: T;
+    onChange: (item: { label: string; value: T }) => void;
     icon: any;
     label: string;
+    containerStyle?: StyleProp<ViewStyle>;
 }
 // #enderegion IPROPS --> //////////////////////////////////
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
-        padding: 16,
+        marginBottom: 15,
     },
     dropdown: {
         height: 50,
@@ -88,8 +89,8 @@ const styles = StyleSheet.create({
     label: {
         position: 'absolute',
         backgroundColor: 'white',
-        left: 22,
-        top: 8,
+        left: 15,
+        top: -7,
         zIndex: 999,
         paddingHorizontal: 8,
         fontSize: 14,

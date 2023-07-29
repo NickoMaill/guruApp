@@ -3,8 +3,9 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import { Header as HeaderRN, Icon } from '@rneui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '~/core/router/routerType';
+import useNavigation from '~/hooks/useNavigation';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
@@ -13,7 +14,6 @@ import { RootStackParamList } from '~/core/router/routerType';
 
 export default function Header({}: IHeader) {
     // #region STATE --> ///////////////////////////////////////
-    const [currentRoute, setCurrentRoute] = useState('');
     const [leftComponent, setLeftComponent] = useState<ReactElement>(null);
     const [rightComponent, setRightComponent] = useState<ReactElement>(null);
     const route = useRoute();
@@ -26,7 +26,7 @@ export default function Header({}: IHeader) {
     // #region METHODS --> /////////////////////////////////////
     const renderNavigationButton = (screen: keyof ReactNavigation.RootParamList, icon: string) => {
         return (
-            <TouchableOpacity onPress={() => navigation.navigate(screen)}>
+            <TouchableOpacity onPress={() => navigation.goTo(screen)}>
                 <Icon name={icon} type="font-awesome-5" color="#b2b2b2" />
             </TouchableOpacity>
         );
@@ -43,8 +43,8 @@ export default function Header({}: IHeader) {
                 setRightComponent(renderNavigationButton('Home', 'home'));
                 break;
             case 'Setup':
-                setLeftComponent(renderNavigationButton("Home", "home"));
-                setRightComponent(renderNavigationButton("Info", "info-circle"))
+                setLeftComponent(renderNavigationButton('Home', 'home'));
+                setRightComponent(renderNavigationButton('Info', 'info-circle'));
         }
     };
     // #endregion METHODS --> //////////////////////////////////
@@ -56,7 +56,17 @@ export default function Header({}: IHeader) {
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return <HeaderRN backgroundColor="white" barStyle="dark-content" leftComponent={leftComponent} centerComponent={{ text: 'Guru' }} rightComponent={rightComponent} />;
+    return (
+        <HeaderRN
+            containerStyle={{ margin: 0, padding: 0 }}
+            style={{ margin: 0, padding: 0 }}
+            backgroundColor="white"
+            barStyle="dark-content"
+            leftComponent={leftComponent}
+            centerComponent={{ text: 'Guru' }}
+            rightComponent={rightComponent}
+        />
+    );
     // #endregion RENDER --> ///////////////////////////////////
 }
 

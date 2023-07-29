@@ -57,9 +57,9 @@ const styles = StyleSheet.create({
     button: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: "#ffffff",
+        backgroundColor: '#ffffff',
         padding: 20,
         borderWidth: 1,
-        borderColor: "#000000",
+        borderColor: '#000000',
     },
 });
