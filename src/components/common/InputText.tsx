@@ -1,5 +1,5 @@
 // #region IMPORTS -> /////////////////////////////////////
-
+import React from 'react';
 import { InputModeOptions, NativeSyntheticEvent, StyleProp, TextInputChangeEventData, TextInputIOSProps, TextProps, TouchableOpacity } from 'react-native';
 import { Input } from '@rneui/themed';
 import { useEffect, useState } from 'react';

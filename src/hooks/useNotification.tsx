@@ -1,7 +1,8 @@
+import React from 'react';
 import Toast, { BaseToast, ErrorToast, InfoToast, SuccessToast, ToastConfig } from 'react-native-toast-message';
 
 export default function useNotification(): IUseNotification {
-    const displaySuccess = (title: string, message: string, onPress?: () => void) => {
+    const displaySuccess = (title: string, message?: string, onPress?: () => void) => {
         Toast.show({
             type: 'success',
             text1: `✅ ${title}`,
@@ -11,7 +12,7 @@ export default function useNotification(): IUseNotification {
         });
     };
 
-    const displayError = (title: string, message: string, onPress?: () => void) => {
+    const displayError = (title: string, message?: string, onPress?: () => void) => {
         Toast.show({
             type: 'error',
             text1: `⛔️ ${title}`,
@@ -21,7 +22,7 @@ export default function useNotification(): IUseNotification {
         });
     };
 
-    const displayInfo = (title: string, message: string, onPress?: () => void) => {
+    const displayInfo = (title: string, message?: string, onPress?: () => void) => {
         Toast.show({
             type: 'info',
             text1: `ℹ️ ${title}`,
@@ -31,7 +32,7 @@ export default function useNotification(): IUseNotification {
         });
     };
 
-    const displayWarning = (title: string, message: string, onPress?: () => void) => {
+    const displayWarning = (title: string, message?: string, onPress?: () => void) => {
         Toast.show({
             type: 'warning',
             text1: `⚠️ ${title}`,
@@ -45,13 +46,13 @@ export default function useNotification(): IUseNotification {
 }
 
 interface IUseNotification {
-    displaySuccess: (title: string, message: string, onPress?: () => void) => void;
-    displayError: (title: string, message: string, onPress?: () => void) => void;
-    displayInfo: (title: string, message: string, onPress?: () => void) => void;
-    displayWarning: (title: string, message: string, onPress?: () => void) => void;
+    displaySuccess: (title: string, message?: string, onPress?: () => void) => void;
+    displayError: (title: string, message?: string, onPress?: () => void) => void;
+    displayInfo: (title: string, message?: string, onPress?: () => void) => void;
+    displayWarning: (title: string, message?: string, onPress?: () => void) => void;
 }
 
-type toastType = 'success' | 'error' | 'info' | 'warning';
+// type toastType = 'success' | 'error' | 'info' | 'warning';
 
 export const customToastConfig: ToastConfig = {
     success: (props) => <SuccessToast {...props} />,

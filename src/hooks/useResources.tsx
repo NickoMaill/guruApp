@@ -1,7 +1,6 @@
 import { RecursiveKeyOf } from '~/core/types/common';
 import { TranslationResourcesType } from '~/resources/i18n/types';
-import i18n, { useTranslation } from 'react-i18next';
-import { TFunctionDetailedResult } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 export default function useResources(): IUseResources {
     const { t } = useTranslation();

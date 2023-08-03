@@ -1,7 +1,6 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Icon as RootIcon } from '@rneui/themed';
-import { EntypoNameType, FeatherNameType, FontistoNameType, IoniconsNameType, OcticonsNameType, ZocialNameType } from '../IconNameTypes';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////

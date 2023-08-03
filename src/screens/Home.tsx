@@ -1,6 +1,5 @@
 // #region IMPORTS -> /////////////////////////////////////
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
 import BouncerLoader from '~/components/common/BouncerLoader';
 import FabGroup from '~/components/home/FabGroup';
 import Layout from '~/components/layouts/Layout';
@@ -9,9 +8,9 @@ import Layout from '~/components/layouts/Layout';
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Home({ navigation }) {
+export default function Home() {
     // #region STATE --> ///////////////////////////////////////
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoading, _setIsLoading] = useState<boolean>(true);
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
@@ -36,5 +35,5 @@ export default function Home({ navigation }) {
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface IHome {}
+// interface IHome {}
 // #enderegion IPROPS --> //////////////////////////////////

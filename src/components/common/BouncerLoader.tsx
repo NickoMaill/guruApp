@@ -7,7 +7,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withDelay, withRepeat, with
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function BouncerLoader({}: IBouncerLoader) {
+export default function BouncerLoader() {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
@@ -40,10 +40,10 @@ export default function BouncerLoader({}: IBouncerLoader) {
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface IBouncerLoader {}
+// interface IBouncerLoader {}
 // #enderegion IPROPS --> //////////////////////////////////
 
-function Ring({ delay }) {
+function Ring({ delay }: IRing) {
     const ring = useSharedValue(0);
     const ringStyle = useAnimatedStyle(() => {
         return {
@@ -59,6 +59,10 @@ function Ring({ delay }) {
         ring.value = withDelay(delay, withRepeat(withTiming(1, { duration: 2000 }), -1, false));
     }, []);
     return <Animated.View style={[styles.ring, ringStyle]} />;
+}
+
+interface IRing {
+    delay: number;
 }
 
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, createContext } from 'react';
+import React, { Dispatch, SetStateAction, createContext } from 'react';
 
 interface IAppContext {
     access: string;

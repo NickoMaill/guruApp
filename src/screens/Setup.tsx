@@ -33,5 +33,5 @@ export default function Setup() {
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface ISetup {}
+// interface ISetup {}
 // #enderegion IPROPS --> //////////////////////////////////

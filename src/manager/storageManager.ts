@@ -37,7 +37,7 @@ class StorageManager {
         await AsyncStorage.removeItem(key);
     }
 
-    public async mergeItem<T>(key: string, value: T): Promise<void> {
+    public async mergeItem<T>(key: RecursiveKeyOf<StorageNameReference>, value: T): Promise<void> {
         const out = JSON.stringify(value);
         await AsyncStorage.mergeItem(key, out);
     }

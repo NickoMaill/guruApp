@@ -1,7 +1,6 @@
 // #region IMPORTS -> /////////////////////////////////////
-import { Text } from '@rneui/themed';
 import React, { useState } from 'react';
-import { Animated, PanResponder, ScrollView, StyleSheet } from 'react-native';
+import { Animated, PanResponder, ScrollView } from 'react-native';
 import { swipeStyle } from '~/assets/styles/swiperStyle';
 import configManager from '~/manager/configManager';
 // #endregion IMPORTS -> //////////////////////////////////
@@ -12,13 +11,13 @@ import configManager from '~/manager/configManager';
 export default function SwipeCard({ item, removeCard, swipedDirection }: ISwipeCard) {
     // let xPosition = new Animated.Value(0);
     const [xPosition, setXPosition] = useState(new Animated.Value(0));
-    let cardOpacity = new Animated.Value(1);
-    let rotateCard = xPosition.interpolate({
+    const cardOpacity = new Animated.Value(1);
+    const rotateCard = xPosition.interpolate({
         inputRange: [-200, 0, 200],
         outputRange: ['-20deg', '0deg', '20deg'],
     });
 
-    let panResponder = PanResponder.create({
+    const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => false,
         onMoveShouldSetPanResponder: () => true,
         onStartShouldSetPanResponderCapture: () => false,

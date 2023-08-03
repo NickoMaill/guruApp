@@ -9,6 +9,10 @@ import RadioGroup, { RadioPropsData } from '~/components/common/RadioGroup';
 import { RecipesSubCategoryEnum } from '~/data/model/recipesApiModel';
 import CheckBoxGroup from '~/components/common/CheckBoxGroup';
 import storageManager from '~/manager/storageManager';
+import useUserService from '~/hooks/services/useUserService';
+import useNavigation from '~/hooks/useNavigation';
+import { AppError } from '~/core/appError';
+import useNotification from '~/hooks/useNotification';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
@@ -46,16 +50,17 @@ const baseFinalize: UpdateUserDto = {
 };
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Finalize({}: IFinalize) {
+export default function Finalize() {
     // #region STATE --> ///////////////////////////////////////
-    const [selectValue, setSelectedValue] = useState<FoodPreferencesEnum>(null);
-    const [checkBoxValue, setCheckboxValue] = useState<boolean>(false);
     const [finalizePayload, setFinalizePayload] = useState<UpdateUserDto>(baseFinalize);
     const [gotIntolerance, setGotIntolerance] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
+    const UserServices = useUserService();
+    const Nav = useNavigation();
+    const Notif = useNotification();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
@@ -101,7 +106,10 @@ export default function Finalize({}: IFinalize) {
 
     const submit = async () => {
         setIsLoading(true);
-        // await userServices.finalize(finalizePayload).finally(() => setIsLoading(false));
+        await UserServices.finalizeAccount(finalizePayload)
+            .then((res) => (res ? Nav.goTo('Home') : null))
+            .catch((err: AppError) => Notif.displayError(err.message))
+            .finally(() => setIsLoading(false));
     };
     // #endregion METHODS --> //////////////////////////////////
 
@@ -114,7 +122,7 @@ export default function Finalize({}: IFinalize) {
             <ScrollView>
                 <View style={{ marginBottom: 20 }}>
                     <Text style={{ textAlign: 'center', fontSize: 25, marginBottom: 8 }}>Bienvenue sur Guru</Text>
-                    <Text style={{ textAlign: 'center' }}>on a besoin d'apprendre a vous connaître, pour vous proposer les recettes approprié a vos préférences et restrictions alimentaires</Text>
+                    <Text style={{ textAlign: 'center' }}>On a besoin d&apos;apprendre a vous connaître, pour vous proposer les recettes approprié a vos préférences et restrictions alimentaires</Text>
                 </View>
                 <View>
                     <SelectInput<FoodPreferencesEnum>
@@ -206,5 +214,5 @@ export default function Finalize({}: IFinalize) {
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface IFinalize {}
+// interface IFinalize {}
 // #enderegion IPROPS --> //////////////////////////////////

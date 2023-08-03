@@ -1,4 +1,5 @@
 // #region IMPORTS -> /////////////////////////////////////
+import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Icon, Text } from '@rneui/themed';
 import { TouchableOpacity, View } from 'react-native';
@@ -37,10 +38,8 @@ export default function Info() {
             </View>
             <View style={{ padding: 10 }}>
                 <Text style={{ textAlign: 'center' }}>
-                    Bienvenue sur Guru recipes, si vous êtes ici c'est que vous êtes curieux !{'\n'}
-                    {'\n'}
-                    J'ai imaginé cette application pour toutes les personnes qui ne savent pas quoi manger ou qui ont tout simplement envie de découvrir des recettes par la force du hasard (enfin pas
-                    exactement)
+                    Bienvenue sur Guru recipes, si vous êtes ici c&apos;est que vous êtes curieux ! J&apos;ai imaginé cette application pour toutes les personnes qui ne savent pas quoi manger ou qui
+                    ont tout simplement envie de découvrir des recettes par la force du hasard (enfin pas exactement)
                 </Text>
             </View>
             <View style={{ marginHorizontal: 20 }}>

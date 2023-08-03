@@ -1,15 +1,13 @@
 // #region IMPORTS -> /////////////////////////////////////
-import { Button, Icon, Input, Text } from '@rneui/themed';
+import { Button, Text } from '@rneui/themed';
 import React, { useState } from 'react';
-import { TouchableOpacity, View, Keyboard, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import InputText from '../common/InputText';
 import { INewUserDto } from '~/data/model/userApiModel';
-import useServiceApi from '~/hooks/useServiceApi';
-import useUserService from '~/hooks/services/useUserService';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
-const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+const emailRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
 const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/g;
 const frenchPhoneRegex = /^(0|(\+33[\s]?([0]?|[(0)]{3}?)))[1-9]([-. ]?[0-9]{2}){4}$/g;
 type InputsError = {
@@ -46,7 +44,7 @@ const initialStateError: InputsError = {
 
 export default function SignUpForm({ submit, errorMessage, isLoading }: ISignUpForm) {
     // #region STATE --> ///////////////////////////////////////
-    const [newUser, setNewUser] = useState<INewUserDto>({ email: '', password: '', firstName: '', lastName: '', phoneNumber: '+33' });
+    const [newUser, setNewUser] = useState<INewUserDto>({ username: '', email: '', password: '', firstName: '', lastName: '', phoneNumber: '' });
     const [error, setError] = useState<InputsError>(initialStateError);
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     // #endregion STATE --> ////////////////////////////////////
@@ -98,7 +96,14 @@ export default function SignUpForm({ submit, errorMessage, isLoading }: ISignUpF
             return false;
         }
 
-        if (!newUser.phoneNumber.trim().split(' ').join().match(frenchPhoneRegex)) {
+        if (newUser.password !== confirmPassword) {
+            setError((prevState) => {
+                return { ...prevState, errorPassword: true, errorPasswordMessage: 'les mots de passe ne concorde pas' };
+            });
+            return false;
+        }
+
+        if (!newUser.phoneNumber.trim().split(' ').join('').match(frenchPhoneRegex)) {
             setError((prevState) => {
                 return { ...prevState, errorPhone: true, errorPhoneMessage: 'numéros de téléphone incorrecte' };
             });
@@ -123,6 +128,7 @@ export default function SignUpForm({ submit, errorMessage, isLoading }: ISignUpF
     };
 
     const sendPayload = () => {
+        setError(initialStateError);
         if (!checkInput()) {
             return;
         }
@@ -146,8 +152,8 @@ export default function SignUpForm({ submit, errorMessage, isLoading }: ISignUpF
                     iconFamily="antdesign"
                     nameIcon="user"
                     colorIcon="#b2b2b2"
-                    inputValue={newUser.lastName}
-                    onChangeText={(e) => changePayload('lastName', e)}
+                    inputValue={newUser.username}
+                    onChangeText={(e) => changePayload('username', e)}
                 />
                 <InputText
                     errorMessage={error.errorLastNameMessage}
@@ -159,6 +165,7 @@ export default function SignUpForm({ submit, errorMessage, isLoading }: ISignUpF
                     nameIcon="idcard"
                     colorIcon="#b2b2b2"
                     inputValue={newUser.lastName}
+                    autoCapitalize="words"
                     onChangeText={(e) => changePayload('lastName', e)}
                 />
                 <InputText
@@ -170,6 +177,7 @@ export default function SignUpForm({ submit, errorMessage, isLoading }: ISignUpF
                     iconFamily="antdesign"
                     nameIcon="idcard"
                     colorIcon="#b2b2b2"
+                    autoCapitalize="words"
                     inputValue={newUser.firstName}
                     onChangeText={(e) => changePayload('firstName', e)}
                 />
@@ -218,6 +226,7 @@ export default function SignUpForm({ submit, errorMessage, isLoading }: ISignUpF
                     inputValue={confirmPassword}
                     onChangeText={(e) => setConfirmPassword(e)}
                 />
+                <Text style={{ color: 'red', textAlign: 'center', fontWeight: 'bold', marginBottom: 20 }}>{errorMessage}</Text>
                 <Button
                     loading={isLoading}
                     radius={100}

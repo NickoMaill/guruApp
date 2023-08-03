@@ -1,33 +1,30 @@
 // #region IMPORTS -> /////////////////////////////////////
-import { Icon } from '@rneui/base';
-import { Button, CheckBox, Input, Text } from '@rneui/themed';
+import { Button, CheckBox, Text } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View, Keyboard } from 'react-native';
-import { AppError, ErrorTypeEnum } from '~/core/appError';
+import { View, Keyboard } from 'react-native';
 import { UserLoginPayload } from '~/data/model/userApiModel';
 import configManager from '~/manager/configManager';
 import InputText from '../common/InputText';
+import useResources from '~/hooks/useResources';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
-const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+const emailRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
 type InputsError = {
     errorEmail: boolean;
     errorEmailMessage: string;
     errorPassword: boolean;
     errorPasswordMessage: string;
-    errorGlobalMessage: string;
 };
 const initialStateError: InputsError = {
     errorEmail: false,
     errorPassword: false,
     errorEmailMessage: '',
     errorPasswordMessage: '',
-    errorGlobalMessage: '',
 };
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm) {
+export default function SignInForm({ submit, isLoading, errorMessage }: ISignInForm) {
     // #region STATE --> ///////////////////////////////////////
     const [isRemember, setIsRemember] = useState<boolean>(false);
     const [password, setPassword] = useState<string>('');
@@ -37,7 +34,8 @@ export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
-    Keyboard.addListener('keyboardWillShow', (e) => {
+    const Resources = useResources();
+    Keyboard.addListener('keyboardWillShow', () => {
         setIsKeyboardShown(true);
     });
 
@@ -50,21 +48,21 @@ export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm
     const verifyInput = (): boolean => {
         if (email.length === 0 || !email) {
             setError((prevState) => {
-                return { ...prevState, errorEmail: true, errorEmailMessage: 'veuillez entrer une adresse email valide' };
+                return { ...prevState, errorEmail: true, errorEmailMessage: Resources.translate('login.error.invalidEmail') };
             });
             return false;
         }
 
         if (email.length > 0 && !email.match(emailRegex)) {
             setError((prevState) => {
-                return { ...prevState, errorEmail: true, errorEmailMessage: "mauvais format d'adresse email" };
+                return { ...prevState, errorEmail: true, errorEmailMessage: Resources.translate('login.error.wrongEmailFormat') };
             });
             return false;
         }
 
         if (password.length === 0 || !password) {
             setError((prevState) => {
-                return { ...prevState, errorPassword: true, errorPasswordMessage: 'un mot de passe est requis pour continuer' };
+                return { ...prevState, errorPassword: true, errorPasswordMessage: Resources.translate('login.error.requiredPassword') };
             });
             return false;
         }
@@ -88,12 +86,12 @@ export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm
 
     // #region USEEFFECT --> ///////////////////////////////////
     useEffect(() => {
-        if (errorCred) {
+        if (errorMessage) {
             setError((prevState) => {
-                return { ...prevState, errorEmail: true, errorPassword: true, errorGlobalMessage: 'Email et/ou mot de passe invalide' };
+                return { ...prevState, errorEmail: true, errorPassword: true };
             });
         }
-    }, [errorCred]);
+    }, [errorMessage]);
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
@@ -106,7 +104,7 @@ export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm
                 iconFamily="material"
                 nameIcon="alternate-email"
                 colorIcon="#b2b2b2"
-                label="Email"
+                label={Resources.translate('dictionary.email')}
                 inputType="emailAddress"
                 inputValue={email}
                 placeholder="exemple@email.com"
@@ -117,13 +115,13 @@ export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm
                 isError={error.errorPassword}
                 nameIcon="lock"
                 colorIcon="#b2b2b2"
-                label="Mot de passe"
+                label={Resources.translate('dictionary.password')}
                 inputType="password"
                 inputValue={password}
                 placeholder="********"
             />
-            <CheckBox center title="se souvenir de moi" checked={isRemember} onPress={() => setIsRemember(!isRemember)} checkedColor="tomato" />
-            <Text style={{ color: 'red', textAlign: 'center', fontWeight: 'bold', marginBottom: 20 }}>{error.errorGlobalMessage}</Text>
+            <CheckBox center title={Resources.translate('login.rememberMe')} checked={isRemember} onPress={() => setIsRemember(!isRemember)} checkedColor="tomato" />
+            <Text style={{ color: 'red', textAlign: 'center', fontWeight: 'bold', marginBottom: 20 }}>{errorMessage}</Text>
             <Button
                 loadingProps={{ size: 30 }}
                 loading={isLoading}
@@ -133,7 +131,7 @@ export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm
                 titleStyle={{ fontSize: 20 }}
                 containerStyle={{ margin: 10, marginHorizontal: 50 }}
             >
-                Connexion
+                {Resources.translate('login.connect')}
             </Button>
         </View>
     );
@@ -144,6 +142,6 @@ export default function SignInForm({ submit, isLoading, errorCred }: ISignInForm
 interface ISignInForm {
     submit: (data: UserLoginPayload) => void;
     isLoading: boolean;
-    errorCred: boolean;
+    errorMessage?: string;
 }
 // #enderegion IPROPS --> //////////////////////////////////

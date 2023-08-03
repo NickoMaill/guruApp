@@ -1,5 +1,5 @@
 // #region IMPORTS -> /////////////////////////////////////
-import { Button, FAB, Icon } from '@rneui/themed';
+import { Button, Icon } from '@rneui/themed';
 import React from 'react';
 import { View } from 'react-native';
 // #endregion IMPORTS -> //////////////////////////////////

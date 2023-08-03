@@ -31,11 +31,15 @@ export interface INewUserDto {
     lastName: string;
     phoneNumber: string;
     password: string;
+    username: string;
 }
 export interface IUserDto {
     email: string;
-    useName: string;
+    username: string;
     phoneNumber: string;
+    avatar: string;
+    firstName: string;
+    lastName: string;
     foodPreferences: FoodPreferencesEnum;
     isGlutenIntolerant: boolean;
     isFructoseIntolerant: boolean;

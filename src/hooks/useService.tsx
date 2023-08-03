@@ -1,13 +1,10 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React from 'react';
-import useStorage from './useStorage';
-import { UserLoginPayload } from '~/data/model/userApiModel';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function useService({}: IUseService) {
+export default function useService() {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
@@ -21,10 +18,10 @@ export default function useService({}: IUseService) {
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return {};
+    return null;
     // #endregion RENDER --> ///////////////////////////////////
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface IUseService {}
+// interface IUseService {}
 // #enderegion IPROPS --> //////////////////////////////////

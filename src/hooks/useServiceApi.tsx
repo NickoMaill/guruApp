@@ -1,6 +1,7 @@
 // #region IMPORTS -> /////////////////////////////////////
+import { useContext } from 'react';
+import AppContext from '~/context/AppContext';
 import { AppError, ErrorTypeEnum, ServerApiError } from '~/core/appError';
-import { useAppSelector } from '~/store/storeHooks';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
@@ -9,20 +10,19 @@ const apiHost = 'http://192.168.1.55:8080';
 
 export default function useServiceApi(): IUseServiceApi {
     // #region STATE --> ///////////////////////////////////////
-    const access = useAppSelector((state) => state.access.value);
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
+    const Context = useContext(AppContext);
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
     const get = async <T,>(route: string, headersRequest?: HeadersInit): Promise<T> => {
         const headers = new Headers();
-        headers.set('Authorization', `Bearer ${access}`);
+        headers.set('Authorization', `Bearer ${Context.access}`);
         for (const header in headersRequest) {
             headers.set(header, headersRequest[header]);
         }
-
         const options: RequestInit = {
             method: 'GET',
             //credentials: "include",
@@ -40,7 +40,7 @@ export default function useServiceApi(): IUseServiceApi {
     };
     const post = async <T, B>(route: string, body: B, formData?: FormData, headersRequest?: object): Promise<T> => {
         const headers = new Headers();
-        headers.set('Authorization', `Bearer ${access}`);
+        headers.set('Authorization', `Bearer ${Context.access}`);
         for (const header in headersRequest) {
             headers.set(header, headersRequest[header]);
         }
@@ -62,7 +62,7 @@ export default function useServiceApi(): IUseServiceApi {
     };
     const put = async <T, B>(route: string, body: B, formData?: FormData, headersRequest?: object): Promise<T> => {
         const headers = new Headers();
-        headers.set('Authorization', `Bearer ${access}`);
+        headers.set('Authorization', `Bearer ${Context.access}`);
         for (const header in headersRequest) {
             headers.set(header, headersRequest[header]);
         }
@@ -85,7 +85,7 @@ export default function useServiceApi(): IUseServiceApi {
     };
     const del = async <T, B>(route: string, body?: B, formData?: FormData, headersRequest?: object): Promise<T> => {
         const headers = new Headers();
-        headers.set('Authorization', `Bearer ${access}`);
+        headers.set('Authorization', `Bearer ${Context.access}`);
 
         for (const header in headersRequest) {
             headers.set(header, headersRequest[header]);

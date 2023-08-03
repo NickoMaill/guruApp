@@ -11,7 +11,7 @@ export type RootStackParamList = {
     Home;
     Setup;
     User;
-    Login;
+    Login: { mode: 'signIn' | 'signUp' };
     Error;
     NotFound;
     Info;
@@ -19,6 +19,6 @@ export type RootStackParamList = {
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, Screen>;
-// export interface IHomeProps extends NativeStackScreenProps<RootStackParamList, 'Home'> {
-//     cityId: number;
-// }
+export interface ILoginProps extends NativeStackScreenProps<RootStackParamList, 'Login'> {
+    mode: 'signIn' | 'signUp';
+}

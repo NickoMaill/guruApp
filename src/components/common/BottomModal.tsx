@@ -1,8 +1,7 @@
 // #region IMPORTS -> /////////////////////////////////////
 import { BottomSheet, Icon } from '@rneui/themed';
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
-import { PanResponder, PanResponderGestureState, TouchableOpacity, View } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import React, { ReactNode, useState } from 'react';
+import { PanResponderGestureState, TouchableOpacity, View } from 'react-native';
 import configManager from '~/manager/configManager';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
@@ -13,7 +12,6 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 
 export default function BottomModal({ isVisible, children, onPressClose, overflow, onGestureClose }: IBottomModal) {
     // #region STATE --> ///////////////////////////////////////
-    const [isOpen, setIsOpen] = useState<boolean>(false);
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
@@ -37,6 +35,8 @@ export default function BottomModal({ isVisible, children, onPressClose, overflo
                 <View
                     style={{
                         backgroundColor: '#ffffff',
+                        borderTopStartRadius: 20,
+                        borderTopEndRadius: 20,
                         height: configManager.isIos() ? configManager.dimension.height / 1.07 : configManager.dimension.height / 1.033,
                         justifyContent: 'center',
                         overflow: 'hidden',

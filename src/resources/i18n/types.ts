@@ -1,38 +1,50 @@
 export type TranslationResourcesType = {
-    common: {
-        toast: {};
+    dictionary: {
+        lactose;
+        maltose;
+        galactose;
+        sucrose;
+        fructose;
+        gluten;
         yes;
         no;
+        email;
+        password;
     };
-    home: {
-        toast: {};
+    food: {
+        Chinese;
+        French;
+        Italian;
+        Japanese;
+        Mexican;
+        noPreference;
     };
-    favorites: {
-        yourFavorites;
-        toast: {
-            deletedTitle;
-            deletedContent;
+    home: null;
+    finalize: {
+        welcome;
+        welcomeSubtitle;
+        whichRegime;
+        gotIntolerance;
+        gotCholesterol;
+        youLike;
+        eatAll;
+        vege;
+        vegan;
+        finalizeAccount;
+    };
+    info: null;
+    login: {
+        signIn;
+        signUp;
+        rememberMe;
+        connect;
+        error: {
+            invalidEmail;
+            wrongEmailFormat;
+            requiredPassword;
         };
     };
-    setup: {
-        title;
-        about;
-        defaultCity: {
-            title;
-            modalTitle;
-            citySample;
-            preventTitle;
-            preventMessage;
-        };
-        defaultUnits;
-        languageSelection;
-        toast: {
-            successLanguage;
-            successUnits;
-            successCity;
-        };
-    };
-    error: {
-        errorMessage;
-    };
+    setup: null;
+    splash: null;
+    users: null;
 };

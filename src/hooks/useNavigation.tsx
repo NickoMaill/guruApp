@@ -1,11 +1,10 @@
 // #region IMPORTS -> /////////////////////////////////////
-import { EventListenerCallback, EventMapCore, NavigationProp, useNavigation as useNav } from '@react-navigation/native';
-import React from 'react';
+import { NavigationProp, useNavigation as useNav } from '@react-navigation/native';
 import { AppError, ErrorTypeEnum } from '~/core/appError';
 import routerConfig from '~/core/router/routerConfig';
-import { RootStackParamList } from '~/core/router/routerType';
 import useAuth from './useAuth';
 import useStorage from './useStorage';
+import * as Linking from 'expo-linking';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
@@ -22,7 +21,7 @@ export default function useNavigation(): IUseNavigation {
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
-    const checkBeforeNav = async (screen: keyof ReactNavigation.RootParamList): Promise<boolean> => {
+    const checkBeforeNav = async (screen: keyof ReactNavigation.RootParamList): Promise<keyof ReactNavigation.RootParamList> => {
         const routesDescriptions = routerConfig.routeDescription;
         const targetRoute = routesDescriptions.find((x) => x.name === screen);
         const session = await Storage.getSession();
@@ -32,30 +31,27 @@ export default function useNavigation(): IUseNavigation {
         }
 
         if (!session) {
-            return false;
+            return 'Login';
         }
 
         if (!session.isAccountFinalized) {
-            Nav.navigate('Finalize');
-            return;
+            return 'Finalize';
         }
 
         if (targetRoute.isProtected) {
             const isAuth = await Auth.isAuthenticated();
-            return isAuth;
+            if (isAuth) {
+                return screen;
+            } else {
+                return 'Login';
+            }
         } else {
-            return true;
+            return screen;
         }
     };
 
     const goTo = (screen: keyof ReactNavigation.RootParamList): void => {
-        checkBeforeNav(screen).then((isOk) => {
-            if (isOk) {
-                Nav.navigate(screen);
-            } else {
-                Nav.navigate('Login');
-            }
-        });
+        checkBeforeNav(screen).then((target) => Nav.navigate(target));
     };
 
     const goBack = (): void => {
@@ -69,6 +65,13 @@ export default function useNavigation(): IUseNavigation {
         });
     };
 
+    const goToExternal = (url: string): void => {
+        if (!Linking.canOpenURL(url)) {
+            throw new AppError(ErrorTypeEnum.Technical, 'cannot open url', 'cannot_open');
+        }
+        Linking.openURL(url);
+    };
+
     const root = Nav;
     // #endregion METHODS --> //////////////////////////////////
 
@@ -76,7 +79,7 @@ export default function useNavigation(): IUseNavigation {
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return { goTo, goBack, root };
+    return { goTo, goBack, goToExternal, root };
     // #endregion RENDER --> ///////////////////////////////////
 }
 
@@ -84,6 +87,7 @@ export default function useNavigation(): IUseNavigation {
 interface IUseNavigation {
     goTo: (screen: keyof ReactNavigation.RootParamList) => void;
     goBack: () => void;
+    goToExternal: (url: string) => void;
     root: NavigationProp<ReactNavigation.RootParamList>;
 }
 // #enderegion IPROPS --> //////////////////////////////////

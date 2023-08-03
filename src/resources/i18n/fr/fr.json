@@ -1,48 +1,53 @@
 {
-    "common": {
-        "toast": {
-            "noCityTitle": "Aucune ville sélectionnée",
-            "noCityMessage": "vous devez sélectionner une ville pour acceder a la météo",
-            "favoriteAddedTitle": "Favori ajouté !",
-            "favoriteAddedMessage": "vous avez ajouté {{city}} a vos favoris, consultez sa météo a tout moment",
-            "favoriteDeletedTitle": "Favori supprimé !",
-            "favoriteDeletedMessage": "vous avez supprimé {{city}}"
-        },
+    "dictionary": {
+        "lactose": "lactose",
+        "maltose": "maltose",
+        "galactose": "galactose",
+        "sucrose": "sucrose",
+        "fructose": "fructose",
+        "gluten": "gluten",
         "yes": "oui",
-        "no": "non"
+        "no": "non",
+        "email": "Email",
+        "password": "Mot de passe"
     },
-    "hello": {
-        "splashMessage1": "Bienvenu sur WeatherApp",
-        "splashMessage2": "Ceci est une appli de test",
-        "chooseCity": "Choisissez une ville"
+    "food": {
+        "Chinese": "Chinoise",
+        "French": "Française",
+        "Italian": "Italienne",
+        "Japanese": "Japonaise",
+        "Mexican": "Mexicaine",
+        "noPreference": "Je suis ouvert.e à toute propositions"
     },
     "home": {},
-    "favorites": {
-        "yourFavorites": "Vos Favoris",
-        "toast": {
-            "deletedTitle": "Favori supprimé",
-            "deletedContent": "vous avez supprimé votre favori avec succès"
+    "finalize": {
+        "welcome": "Bienvenue sur Guru",
+        "welcomeSubtitle": "On a besoin d'apprendre a vous connaître, pour vous proposer les recettes approprié a vos préférences et restrictions alimentaires",
+        "whichRegime": "Quel est ton régime alimentaire ?",
+        "gotIntolerance": "Avez vous des intolérances ?",
+        "gotCholesterol": "Avez vous du cholesterol ?",
+        "youLike": "Vous aimez la cuisine",
+        "eatAll": "Je mange de tout",
+        "vege": "Je suis végétarien.ne",
+        "vegan": "Je suis vegan",
+        "finalizeAccount": "Finaliser mon inscription"
+    },
+    "info": {},
+    "login": {
+        "signIn": "Se Connecter",
+        "signUp": "Créer un compte",
+        "rememberMe": "Se souvenir de moi",
+        "connect": "Connexion",
+        "error": {
+            "invalidEmail": "Veuillez entrer une adresse email valide",
+            "wrongEmailFormat": "Mauvais format d'adresse email",
+            "requiredPassword": "Un mot de passe est requis pour continuer",
+            "requiredField": "Ce champs est requis",
+            "passwordFormat": "Votre mot de passe doit contenir 8 caractères dont 1 majuscule, 1 minuscule, 1 chiffre, et un caractère spécial",
+            "noMatchingPassword": "Les mots de passe ne concorde pas"
         }
     },
-    "setup": {
-        "title": "Réglages",
-        "about": "A propos du développeur",
-        "defaultCity": {
-            "title": "Ville par défaut",
-            "modalTitle": "Choisissez votre ville par default",
-            "citySample": "ville par default : {{city}}",
-            "preventTitle": "Êtes vous sûr ?",
-            "preventMessage": "Voulez vous réellement définir {{city}}, {{country}} comme ville par default ?"
-        },
-        "defaultUnits": "Unité par défaut",
-        "languageSelection": "Sélection de la langue",
-        "toast": {
-            "successLanguage": "Langue changée avec succès",
-            "successUnits": "Unités changées avec succès",
-            "successCity": "Ville par défaut changée avec succès"
-        }
-    },
-    "error": {
-        "errorMessage": "oups une erreur est survenu... veuillez recharger l'application"
-    }
+    "setup": {},
+    "splash": {},
+    "users": {}
 }

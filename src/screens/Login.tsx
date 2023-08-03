@@ -1,35 +1,54 @@
 // #region IMPORTS -> /////////////////////////////////////
-import { BottomSheet, Button } from '@rneui/themed';
-import React, { useContext, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Button, Chip, Text } from '@rneui/themed';
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomModal from '~/components/common/BottomModal';
-import ButtonIcon from '~/components/common/ButtonIcon';
 import SignInForm from '~/components/forms/SignInForm';
 import SignUpForm from '~/components/forms/SignUpForm';
 import { AppError } from '~/core/appError';
+import { ILoginProps } from '~/core/router/routerType';
 import { INewUserDto, UserLoginPayload } from '~/data/model/userApiModel';
 import useUserService from '~/hooks/services/useUserService';
 import useNavigation from '~/hooks/useNavigation';
+import * as Linking from 'expo-linking';
+import FullLoader from '~/components/animations/FullLoader';
+import useResources from '~/hooks/useResources';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Login({}) {
+export default function Login({ navigation }: ILoginProps) {
     // #region STATE --> ///////////////////////////////////////
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
-    const [access, setAccess] = useState<string>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [errorCred, setErrorCred] = useState<boolean>(false);
+    const [isGlobaleLoading, setIsGlobalLoading] = useState<boolean>(false);
     const [accountCreated, setAccountCreated] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>(null);
+    const [targetEmail, setTargetEmail] = useState<string>(null);
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
     const UserService = useUserService();
     const Nav = useNavigation();
+    const Resources = useResources();
+
+    Linking.addEventListener('url', (e) => {
+        const dataUrl = Linking.parse(e.url);
+        if (dataUrl.queryParams.mode) {
+            setMode(dataUrl.queryParams.mode as 'signIn' | 'signUp');
+            setAccountCreated(false);
+            setIsVisible(true);
+        }
+    });
+
+    navigation.addListener('focus', () => {
+        setIsLoading(false);
+        setAccountCreated(false);
+        setIsGlobalLoading(false);
+    });
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
@@ -37,31 +56,40 @@ export default function Login({}) {
         setIsVisible(!isVisible);
         setMode(chosenMode);
         if (isVisible) {
-            setErrorCred(false);
             setErrorMessage(null);
         }
     };
 
     const signIn = async (payload: UserLoginPayload) => {
         setIsLoading(true);
-        setErrorCred(false);
         setErrorMessage(null);
-        await UserService.login(payload)
-            .then((res) => (res ? Nav.goTo('Home') : setErrorCred(true)))
-            .catch((err: AppError) => {
-                if (err.code === 'wrong_credentials') {
-                    setErrorCred(true);
-                }
-            })
-            .finally(() => setIsLoading(false));
+        const login = await UserService.login(payload).catch((err: AppError) => {
+            setErrorMessage(err.message);
+            setIsLoading(false);
+            return false;
+        });
+        if (login) {
+            Nav.goTo('Home');
+            setIsGlobalLoading(true);
+            setIsLoading(false);
+            setIsVisible(false);
+        }
     };
 
     const signUp = async (payLoad: INewUserDto) => {
         setIsLoading(true);
+        setErrorMessage(null);
+        setTargetEmail(payLoad.email);
+
         await UserService.subscribe(payLoad)
-            .then((res) => setAccountCreated(true))
+            .then(() => {
+                setAccountCreated(true);
+            })
             .catch((err: AppError) => setErrorMessage(err.message))
-            .finally(() => setIsLoading(false));
+            .finally(() => {
+                setIsLoading(false);
+                setIsVisible(false);
+            });
     };
     // #endregion METHODS --> //////////////////////////////////
 
@@ -69,22 +97,59 @@ export default function Login({}) {
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return (
-        <SafeAreaView style={{ flex: 1, justifyContent: 'center', backgroundColor: 'white' }}>
-            <Button onPress={() => openCloseBottomSheet('signIn')} radius={100} titleStyle={{ fontSize: 25 }} buttonStyle={{ padding: 15, backgroundColor: 'tomato' }} containerStyle={{ margin: 20 }}>
-                Se Connecter
-            </Button>
-            <Button onPress={() => openCloseBottomSheet('signUp')} radius={100} titleStyle={{ fontSize: 25 }} buttonStyle={{ padding: 15, backgroundColor: 'tomato' }} containerStyle={{ margin: 20 }}>
-                Créer un compte
-            </Button>
-            <BottomModal onGestureClose={(e) => setIsVisible(!e)} overflow="hidden" onPressClose={() => openCloseBottomSheet()} isVisible={isVisible}>
-                {mode === 'signIn' ? <SignInForm errorCred={errorCred} isLoading={isLoading} submit={signIn} /> : <SignUpForm submit={signUp} isLoading={isLoading} errorMessage={errorMessage} />}
-            </BottomModal>
-        </SafeAreaView>
-    );
+    if (isGlobaleLoading) {
+        return <FullLoader />;
+    } else {
+        if (accountCreated) {
+            return (
+                <SafeAreaView style={{ flex: 1, justifyContent: 'center', margin: 20 }}>
+                    <Text style={{ textAlign: 'center' }}>Votre compte à été crée, confirmez votre adresse email pour commencer à utiliser guru</Text>
+                    <TouchableOpacity>
+                        <Chip
+                            buttonStyle={{ borderWidth: 1 }}
+                            onPress={() => Nav.goToExternal(`message:${targetEmail}`)}
+                            containerStyle={{ marginVertical: 15 }}
+                            type="outline"
+                            title="Acceder a vos emails"
+                        />
+                    </TouchableOpacity>
+                </SafeAreaView>
+            );
+        } else {
+            return (
+                <SafeAreaView style={{ flex: 1, justifyContent: 'center', backgroundColor: 'white' }}>
+                    <Button
+                        onPress={() => openCloseBottomSheet('signIn')}
+                        radius={100}
+                        titleStyle={{ fontSize: 25 }}
+                        buttonStyle={{ padding: 15, backgroundColor: 'tomato' }}
+                        containerStyle={{ margin: 20 }}
+                    >
+                        {Resources.translate('login.signIn')}
+                    </Button>
+                    <Button
+                        onPress={() => openCloseBottomSheet('signUp')}
+                        radius={100}
+                        titleStyle={{ fontSize: 25 }}
+                        buttonStyle={{ padding: 15, backgroundColor: 'tomato' }}
+                        containerStyle={{ margin: 20 }}
+                    >
+                        {Resources.translate('login.signUp')}
+                    </Button>
+                    <BottomModal onGestureClose={(e) => setIsVisible(!e)} overflow="hidden" onPressClose={() => openCloseBottomSheet()} isVisible={isVisible}>
+                        {mode === 'signIn' ? (
+                            <SignInForm errorMessage={errorMessage} isLoading={isLoading} submit={signIn} />
+                        ) : (
+                            <SignUpForm submit={signUp} isLoading={isLoading} errorMessage={errorMessage} />
+                        )}
+                    </BottomModal>
+                </SafeAreaView>
+            );
+        }
+    }
     // #endregion RENDER --> ///////////////////////////////////
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface ILogin {}
+// interface ILogin {}
 // #enderegion IPROPS --> //////////////////////////////////

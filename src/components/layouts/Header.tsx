@@ -1,10 +1,8 @@
 // #region IMPORTS -> /////////////////////////////////////
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Header as HeaderRN, Icon } from '@rneui/themed';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { RootStackParamList } from '~/core/router/routerType';
 import useNavigation from '~/hooks/useNavigation';
 // #endregion IMPORTS -> //////////////////////////////////
 
@@ -12,7 +10,7 @@ import useNavigation from '~/hooks/useNavigation';
 
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Header({}: IHeader) {
+export default function Header() {
     // #region STATE --> ///////////////////////////////////////
     const [leftComponent, setLeftComponent] = useState<ReactElement>(null);
     const [rightComponent, setRightComponent] = useState<ReactElement>(null);

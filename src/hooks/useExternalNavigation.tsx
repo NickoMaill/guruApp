@@ -1,5 +1,4 @@
 // #region IMPORTS -> /////////////////////////////////////
-import React from 'react';
 import { Linking } from 'react-native';
 import { AppError, ErrorTypeEnum } from '~/core/appError';
 // #endregion IMPORTS -> //////////////////////////////////

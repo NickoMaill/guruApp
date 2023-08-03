@@ -1,7 +1,7 @@
+import React from 'react';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './routerType';
-import * as Linking from 'expo-linking';
 import Home from '~/screens/Home';
 import Login from '~/screens/Login';
 import Setup from '~/screens/Setup';
@@ -10,13 +10,12 @@ import Info from '~/screens/Info';
 import Splash from '~/screens/Splash';
 import Finalize from '~/screens/Finalize';
 import { Text } from '@rneui/themed';
+import routerConfig from './routerConfig';
 
 export default function Router() {
     const Stack = createNativeStackNavigator<RootStackParamList>();
-    const prefix = Linking.createURL('/');
-
     return (
-        <NavigationContainer linking={{ prefixes: [prefix] }} fallback={<Text>Loading...</Text>} theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: 'transparent' } }}>
+        <NavigationContainer linking={routerConfig.routeLinks} fallback={<Text>Loading...</Text>} theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: 'transparent' } }}>
             <Stack.Navigator initialRouteName="Splash">
                 <Stack.Group screenOptions={{ headerShown: false, gestureEnabled: false }}>
                     <Stack.Screen name="Home" component={Home} />

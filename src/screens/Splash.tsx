@@ -4,8 +4,6 @@ import LottieView from 'lottie-react-native';
 import { Text } from '@rneui/base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import configManager from '~/manager/configManager';
-import useAuth from '~/hooks/useAuth';
-import useStorage from '~/hooks/useStorage';
 import useNavigation from '~/hooks/useNavigation';
 // #endregion IMPORTS -> //////////////////////////////////
 
@@ -15,8 +13,6 @@ import useNavigation from '~/hooks/useNavigation';
 export default function Splash() {
     const [isSplashEnded, setIsSplashEnded] = useState<boolean>(false);
     const Nav = useNavigation();
-    const Auth = useAuth();
-    const Storage = useStorage();
 
     useEffect(() => {
         if (isSplashEnded) {
@@ -33,5 +29,5 @@ export default function Splash() {
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface ISplash {}
+// interface ISplash {}
 // #enderegion IPROPS --> //////////////////////////////////
