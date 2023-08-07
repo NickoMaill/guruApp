@@ -64,7 +64,7 @@ export default function User() {
                             <Image
                                 style={{ width: 100, height: 100, borderRadius: 50, shadowColor: 'black', shadowOffset: { width: -2, height: 4 }, shadowOpacity: 0.5, shadowRadius: 3 }}
                                 source={{ uri: envConfig.BASE_URL + userData.avatar }}
-                                PlaceholderContent={<ActivityIndicator/>}
+                                PlaceholderContent={<ActivityIndicator />}
                             />
                             <TouchableOpacity style={{ padding: 5, backgroundColor: 'white', position: 'absolute', right: 0, bottom: 0, borderRadius: 50 }}>
                                 <Icon type="font-awesome" name="pencil" />

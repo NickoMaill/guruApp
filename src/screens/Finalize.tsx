@@ -1,7 +1,7 @@
 // #region IMPORTS -> /////////////////////////////////////
 import { Button, Text } from '@rneui/themed';
-import React, { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FoodPreferencesEnum, UpdateUserDto } from '~/data/model/userApiModel';
 import SelectInput from '~/components/common/SelectInput';
@@ -13,6 +13,12 @@ import useUserService from '~/hooks/services/useUserService';
 import useNavigation from '~/hooks/useNavigation';
 import { AppError } from '~/core/appError';
 import useNotification from '~/hooks/useNotification';
+import { Regular } from '~/components/common/Text';
+import configManager from '~/manager/configManager';
+import { AutocompleteIngredientType } from '~/data/model/ingredientsApiModel';
+import useIngredientsService from '~/hooks/services/useIngredientsService';
+import SearchBar from '~/components/common/SearchBar';
+import { updateStateObject } from '~/helpers/stateHelper';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
@@ -47,6 +53,7 @@ const baseFinalize: UpdateUserDto = {
     isSucroseIntolerant: false,
     gotCholesterol: false,
     favoritesFoods: [],
+    notLikedIngredients: [],
 };
 // #endregion SINGLETON --> /////////////////////////////////
 
@@ -55,37 +62,19 @@ export default function Finalize() {
     const [finalizePayload, setFinalizePayload] = useState<UpdateUserDto>(baseFinalize);
     const [gotIntolerance, setGotIntolerance] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [ingredients, setIngredients] = useState<AutocompleteIngredientType[]>(null);
+    const [valueSearch, setValueSearch] = useState<string>('');
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
     const UserServices = useUserService();
     const Nav = useNavigation();
     const Notif = useNotification();
+    const IngredientsService = useIngredientsService();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
-    const updatePayload = <T,>(key: keyof UpdateUserDto, value: T) => {
-        setFinalizePayload((prevState) => {
-            if (Array.isArray(prevState[key])) {
-                let tempArray = prevState[key] as T[];
-                if (tempArray.includes(value)) {
-                    tempArray = tempArray.filter((x) => x !== value);
-                } else {
-                    tempArray.push(value);
-                }
-                return {
-                    ...prevState,
-                    [key]: tempArray,
-                };
-            } else {
-                return {
-                    ...prevState,
-                    [key]: value,
-                };
-            }
-        });
-    };
-
     const prepareIntolerance = (value: boolean) => {
         if (!value) {
             setFinalizePayload((prevState) => {
@@ -104,33 +93,64 @@ export default function Finalize() {
         setGotIntolerance(value);
     };
 
+    const getIngredients = async (searchString: string) => {
+        setIsSearching(true);
+        await IngredientsService.ingredientsAutocomplete(searchString)
+            .then((res) => setIngredients(res.records))
+            .finally(() => setIsSearching(false));
+    };
+
     const submit = async () => {
         setIsLoading(true);
         await UserServices.finalizeAccount(finalizePayload)
-            .then((res) => (res ? Nav.goTo('Home') : null))
+            .then((res) => res && Nav.goTo('Home'))
             .catch((err: AppError) => Notif.displayError(err.message))
             .finally(() => setIsLoading(false));
     };
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
+    useEffect(() => {
+        if (valueSearch.length > 2) {
+            getIngredients(valueSearch);
+        } else {
+            setIngredients(null);
+        }
+    }, [valueSearch]);
+
+    useEffect(() => {
+        console.log(finalizePayload);
+    }, [finalizePayload]);
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
     return (
         <SafeAreaView style={{ padding: 10, backgroundColor: 'white', flex: 1 }}>
-            <ScrollView>
+            <ScrollView automaticallyAdjustKeyboardInsets>
                 <View style={{ marginBottom: 20 }}>
                     <Text style={{ textAlign: 'center', fontSize: 25, marginBottom: 8 }}>Bienvenue sur Guru</Text>
                     <Text style={{ textAlign: 'center' }}>On a besoin d&apos;apprendre a vous connaître, pour vous proposer les recettes approprié a vos préférences et restrictions alimentaires</Text>
                 </View>
                 <View>
+                    <View>
+                        <SearchBar<AutocompleteIngredientType>
+                            data={ingredients}
+                            keyToDisplay="name"
+                            label="Sélectionner les ingredients que vous ne mangez pas"
+                            onChangeText={(s) => setValueSearch(s)}
+                            onCancel={() => setIngredients(null)}
+                            onSelectItem={(item) => updateStateObject<UpdateUserDto, AutocompleteIngredientType>('notLikedIngredients', item, setFinalizePayload)}
+                            isLoading={isSearching}
+                            value={valueSearch}
+                            placeholder="Ingrédients"
+                        />
+                    </View>
                     <SelectInput<FoodPreferencesEnum>
                         containerStyle={{ marginRight: 100 }}
                         label="Quel est ton régime alimentaire ?"
                         data={dataSelect}
                         value={finalizePayload.foodPreferences}
-                        onChange={(e) => updatePayload<FoodPreferencesEnum>('foodPreferences', e.value)}
+                        onChange={(e) => updateStateObject<UpdateUserDto, FoodPreferencesEnum>('foodPreferences', e.value, setFinalizePayload)}
                         icon={''}
                     />
                     <View>
@@ -149,42 +169,42 @@ export default function Finalize() {
                                 data={checkBoxData}
                                 disabled={!gotIntolerance}
                                 currentValue={finalizePayload.isLactoseIntolerant}
-                                onChange={(v) => updatePayload<boolean>('isLactoseIntolerant', v)}
+                                onChange={(v) => updateStateObject<UpdateUserDto, boolean>('isLactoseIntolerant', v, setFinalizePayload)}
                             />
                             <RadioGroup<boolean>
                                 label="maltose ?"
                                 data={checkBoxData}
                                 disabled={!gotIntolerance}
                                 currentValue={finalizePayload.isMaltoseIntolerant}
-                                onChange={(v) => updatePayload<boolean>('isMaltoseIntolerant', v)}
+                                onChange={(v) => updateStateObject<UpdateUserDto, boolean>('isMaltoseIntolerant', v, setFinalizePayload)}
                             />
                             <RadioGroup<boolean>
                                 label="galactose ?"
                                 data={checkBoxData}
                                 disabled={!gotIntolerance}
                                 currentValue={finalizePayload.isGalactoseIntolerant}
-                                onChange={(v) => updatePayload<boolean>('isGalactoseIntolerant', v)}
+                                onChange={(v) => updateStateObject<UpdateUserDto, boolean>('isGalactoseIntolerant', v, setFinalizePayload)}
                             />
                             <RadioGroup<boolean>
                                 label="sucrose ?"
                                 data={checkBoxData}
                                 disabled={!gotIntolerance}
                                 currentValue={finalizePayload.isSucroseIntolerant}
-                                onChange={(v) => updatePayload<boolean>('isSucroseIntolerant', v)}
+                                onChange={(v) => updateStateObject<UpdateUserDto, boolean>('isSucroseIntolerant', v, setFinalizePayload)}
                             />
                             <RadioGroup<boolean>
                                 label="fructose ?"
                                 data={checkBoxData}
                                 disabled={!gotIntolerance}
                                 currentValue={finalizePayload.isFructoseIntolerant}
-                                onChange={(v) => updatePayload<boolean>('isFructoseIntolerant', v)}
+                                onChange={(v) => updateStateObject<UpdateUserDto, boolean>('isFructoseIntolerant', v, setFinalizePayload)}
                             />
                             <RadioGroup<boolean>
                                 label="gluten ?"
                                 data={checkBoxData}
                                 disabled={!gotIntolerance}
                                 currentValue={finalizePayload.isGlutenIntolerant}
-                                onChange={(v) => updatePayload<boolean>('isGlutenIntolerant', v)}
+                                onChange={(v) => updateStateObject<UpdateUserDto, boolean>('isGlutenIntolerant', v, setFinalizePayload)}
                             />
                         </View>
                     )}
@@ -192,13 +212,13 @@ export default function Finalize() {
                         label="Avez vous du cholesterol ?"
                         data={checkBoxData}
                         currentValue={finalizePayload.gotCholesterol}
-                        onChange={(v) => updatePayload<boolean>('gotCholesterol', v)}
+                        onChange={(v) => updateStateObject<UpdateUserDto, boolean>('gotCholesterol', v, setFinalizePayload)}
                     />
                     <CheckBoxGroup<RecipesSubCategoryEnum>
                         label="Vous aimez la cuisine :"
                         data={foodFavorites}
                         currentValue={finalizePayload.favoritesFoods}
-                        onChange={(v) => updatePayload<RecipesSubCategoryEnum>('favoritesFoods', v)}
+                        onChange={(v) => updateStateObject<UpdateUserDto, RecipesSubCategoryEnum>('favoritesFoods', v, setFinalizePayload)}
                     />
                 </View>
                 <View>

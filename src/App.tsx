@@ -16,11 +16,17 @@ import useCachedResources from './hooks/useCachedResources';
 
 export default function App() {
     const [access, setAccess] = useState<string>(null);
+    const [swipeToLeft, setSwipeToLeft] = useState<boolean>(false);
+    const [swipeToRight, setSwipeToRight] = useState<boolean>(false);
     const isResourcesLoaded = useCachedResources();
 
     const values = {
         access,
         setAccess,
+        swipeToLeft,
+        setSwipeToLeft,
+        swipeToRight,
+        setSwipeToRight,
     };
 
     moment.locale('fr');

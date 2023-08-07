@@ -8,3 +8,10 @@ export enum ResultStatusEnum {
     NotAcceptable = 406,
     Fatal = 500,
 }
+
+export type OutputQueryRequest<T> = {
+    records: T[];
+    totalRecords: number;
+    limit?: number;
+    offset?: number;
+};

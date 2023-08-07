@@ -5,7 +5,7 @@ import { AppError, ErrorTypeEnum, ServerApiError } from '~/core/appError';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
-const apiHost = 'http://192.168.1.55:8080';
+export const apiHost = 'http://192.168.1.55:8080';
 // #endregion SINGLETON --> /////////////////////////////////
 
 export default function useServiceApi(): IUseServiceApi {

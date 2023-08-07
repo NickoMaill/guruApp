@@ -1,50 +1,43 @@
 // #region IMPORTS -> /////////////////////////////////////
 import React from 'react';
-import { Icon as RootIcon } from '@rneui/themed';
-import { TextStyle, ViewStyle } from 'react-native';
+import { AutocompleteIngredientType } from '~/data/model/ingredientsApiModel';
+import { execService } from '~/manager/errorManager';
+import useService from '../useService';
+import useServiceApi from '../useServiceApi';
+import useAuth from '../useAuth';
+import { OutputQueryRequest } from '~/core/types/serverTypes';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
-type IconType =
-    | 'material'
-    | 'material-community'
-    | 'simple-line-icon'
-    | 'zocial'
-    | 'font-awesome'
-    | 'octicon'
-    | 'ionicon'
-    | 'foundation'
-    | 'evilicon'
-    | 'entypo'
-    | 'antdesign'
-    | 'font-awesome-5'
-    | 'feather'
-    | 'fontisto';
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Icon({ name, type, style, color = '#b2b2b2' }: IIcon) {
+export default function useIngredientsService(): IUseIngredientsService {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
+    const Service = useServiceApi();
+    const Auth = useAuth();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
+    const ingredientsAutocomplete = async (searchedIngredient: string): Promise<OutputQueryRequest<AutocompleteIngredientType>> => {
+        await Auth.isAuthenticated();
+        const request = await execService<OutputQueryRequest<AutocompleteIngredientType>>(Service.get('ingredients/autocomplete?name=' + searchedIngredient.trim() + '&limit=5'));
+        return request;
+    };
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return <RootIcon style={style} name={name} type={type} color={color} />;
+    return { ingredientsAutocomplete };
     // #endregion RENDER --> ///////////////////////////////////
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface IIcon {
-    type: IconType;
-    name: string;
-    color?: string;
-    style?: ViewStyle | TextStyle;
+interface IUseIngredientsService {
+    ingredientsAutocomplete: (searchedIngredient: string) => Promise<OutputQueryRequest<AutocompleteIngredientType>>;
 }
 // #enderegion IPROPS --> //////////////////////////////////

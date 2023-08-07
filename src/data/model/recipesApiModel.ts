@@ -1,15 +1,18 @@
 export type RecipesDto = {
+    id?: number;
     name?: string;
     isVegan?: boolean;
     isVegetarian?: boolean;
-    nutriScore?: NutriScoreEnum;
+    nutriScore?: string;
     difficulty?: RecipesDifficultyEnum;
     preparationTime?: number;
     isGluttenFree?: boolean;
     isLactoseFree?: boolean;
-    pictureUrl?: Buffer;
+    pictureUrl?: string;
     category?: RecipesCategoryEnum;
     subCategory?: RecipesSubCategoryEnum;
+    createdAt?: Date;
+    updatedAt?: Date;
     howManyPersons?: number;
     description?: string;
 };

@@ -1,3 +1,4 @@
+import { AutocompleteIngredientType } from './ingredientsApiModel';
 import { RecipesSubCategoryEnum } from './recipesApiModel';
 
 export type UserLoginPayload = {
@@ -65,6 +66,7 @@ export type UpdateUserDto = {
     isEmailConfirmed?: boolean;
     isAccountFinalized?: boolean;
     favoritesFoods?: RecipesSubCategoryEnum[];
+    notLikedIngredients?: AutocompleteIngredientType[];
 };
 
 export enum FoodPreferencesEnum {

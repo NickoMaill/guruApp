@@ -14,7 +14,7 @@ export const swipeStyle = StyleSheet.create({
     },
     cardStyle: {
         width: '90%',
-        height: '80%',
+        height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',

@@ -1,50 +1,39 @@
 // #region IMPORTS -> /////////////////////////////////////
 import React from 'react';
-import { Icon as RootIcon } from '@rneui/themed';
-import { TextStyle, ViewStyle } from 'react-native';
+import useServiceApi from '../useServiceApi';
+import { execService } from '~/manager/errorManager';
+import { RecipesDto } from '~/data/model/recipesApiModel';
+import { OutputQueryRequest } from '~/core/types/serverTypes';
 // #endregion IMPORTS -> //////////////////////////////////
 
 // #region SINGLETON --> ////////////////////////////////////
-type IconType =
-    | 'material'
-    | 'material-community'
-    | 'simple-line-icon'
-    | 'zocial'
-    | 'font-awesome'
-    | 'octicon'
-    | 'ionicon'
-    | 'foundation'
-    | 'evilicon'
-    | 'entypo'
-    | 'antdesign'
-    | 'font-awesome-5'
-    | 'feather'
-    | 'fontisto';
 // #endregion SINGLETON --> /////////////////////////////////
 
-export default function Icon({ name, type, style, color = '#b2b2b2' }: IIcon) {
+export default function useRecipesService(): IUseRecipesService {
     // #region STATE --> ///////////////////////////////////////
     // #endregion STATE --> ////////////////////////////////////
 
     // #region HOOKS --> ///////////////////////////////////////
+    const Service = useServiceApi();
     // #endregion HOOKS --> ////////////////////////////////////
 
     // #region METHODS --> /////////////////////////////////////
+    const getRecipes = async (): Promise<OutputQueryRequest<RecipesDto>> => {
+        const recipes = await execService<OutputQueryRequest<RecipesDto>>(Service.get('recipes/all'));
+        return recipes;
+    };
     // #endregion METHODS --> //////////////////////////////////
 
     // #region USEEFFECT --> ///////////////////////////////////
     // #endregion USEEFFECT --> ////////////////////////////////
 
     // #region RENDER --> //////////////////////////////////////
-    return <RootIcon style={style} name={name} type={type} color={color} />;
+    return { getRecipes };
     // #endregion RENDER --> ///////////////////////////////////
 }
 
 // #region IPROPS -->  /////////////////////////////////////
-interface IIcon {
-    type: IconType;
-    name: string;
-    color?: string;
-    style?: ViewStyle | TextStyle;
+interface IUseRecipesService {
+    getRecipes: () => Promise<OutputQueryRequest<RecipesDto>>;
 }
 // #enderegion IPROPS --> //////////////////////////////////

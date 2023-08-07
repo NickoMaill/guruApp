@@ -48,6 +48,7 @@ export default function useUserService(): IUseUserService {
     };
 
     const finalizeAccount = async (payload: UpdateUserDto): Promise<boolean> => {
+        await Auth.isAuthenticated();
         const request = await execService(Service.put('user/me/finalize', payload));
         handleErrors(request);
         await Storage.updateSession('isAccountFinalized', true);
@@ -75,6 +76,7 @@ export default function useUserService(): IUseUserService {
                 case 'username_already_used':
                     throw new AppError(ErrorTypeEnum.Functional, "Nom d'utilisateur non disponible", error.errorCode);
                 case 'already_finalized':
+                    Navigation.goTo('Home');
                     throw new AppError(ErrorTypeEnum.Functional, 'Compte guru déjà finalisé', error.errorCode);
                 case 'no_user_found':
                     throw new AppError(ErrorTypeEnum.Functional, 'aucun utilisateur trouvé', error.errorCode);
